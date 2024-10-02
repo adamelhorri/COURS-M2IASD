@@ -3,7 +3,7 @@ tags:
   - TBD
   - cours
 ---
-
+relativement plus simple : [[Banalisation cours 2]]
 ### 1. Faits et requêtes conjonctives vus comme des (hyper)graphes
 
 Les **bases de faits** et les **requêtes conjonctives** peuvent être modélisées sous forme de **graphes** ou **hypergraphes**. Ce cadre graphique permet une représentation plus intuitive des relations entre les termes et facilite l'analyse des homomorphismes et des structures minimales.

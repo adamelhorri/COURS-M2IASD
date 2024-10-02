@@ -3,12 +3,12 @@ tags:
   - TBD
   - cours
 ---
-
+comme d'hab , une petite banalisation : [[Banalisation Cours 3]]
 ### 1. Algèbre relationnelle : Langage de requête
 
 L'**algèbre relationnelle** est un langage formel utilisé pour manipuler des bases de données relationnelles. Il est basé sur un ensemble d'**opérations** qui prennent des tables en entrée et produisent de nouvelles tables en sortie. Ce langage constitue la base théorique de **SQL**.
 
-#### 9.1 Opérations principales de l’algèbre relationnelle
+#### 1 Opérations principales de l’algèbre relationnelle
 Voici les principales opérations de l’algèbre relationnelle :
 - **Sélection (σ)** : filtre les lignes d’une table en fonction d’une condition.
 - **Projection (π)** : sélectionne des colonnes spécifiques d’une table.
@@ -20,7 +20,7 @@ Voici les principales opérations de l’algèbre relationnelle :
 
 ### 2. Détails des opérations de l'algèbre relationnelle
 
-#### 10.1 Sélection (σ)
+####  1 Sélection (σ)
 L'opérateur de **sélection** permet de filtrer les lignes d'une table en fonction d'une condition sur ses attributs.
 
 Exemples :
@@ -36,7 +36,7 @@ Exemples :
 Définition formelle de l'opérateur de sélection :
 - **σn=m** : sélectionne les lignes où l’attribut **n** a la même valeur que **m** (qui peut être une constante ou un autre attribut).
 
-#### 10.2 Projection (π)
+####  2 Projection (π)
 L'opérateur de **projection** permet de sélectionner certaines colonnes d’une table, en éliminant les autres.
 
 Exemples :
@@ -52,7 +52,7 @@ Exemples :
 Définition formelle de l'opérateur de projection :
 - **πa1,...,an** : renvoie une nouvelle table contenant uniquement les attributs **a1,...,an** de la table d’origine.
 
-#### 10.3 Jointure naturelle (▷◁)
+####  3 Jointure naturelle (▷◁)
 La **jointure naturelle** combine deux tables en fusionnant les lignes ayant des valeurs communes sur certains attributs.
 
 Exemple :
@@ -67,7 +67,7 @@ Définition formelle de la jointure naturelle :
   RI ▷◁ SI = {f : U ∪ V → dom | fU ∈ RI et fV ∈ SI}
   ```
 
-#### 10.4 Renommage (δ)
+####  4 Renommage (δ)
 L'opérateur de **renommage** permet de changer le nom des attributs d'une table pour éviter les conflits lors des jointures.
 
 Exemple :
@@ -79,7 +79,7 @@ Si nous voulons associer la table **Connect** avec **Stops** sur l'attribut **SI
 Définition formelle de l'opérateur de renommage :
 - **δa1,...,an→b1,...,bn** : renomme les attributs **a1,...,an** en **b1,...,bn**.
 
-#### 10.5 Opérations ensemblistes : Différence, Union, Intersection
+####  5 Opérations ensemblistes : Différence, Union, Intersection
 Ces opérations permettent de comparer deux tables ayant le même schéma :
 - **Différence (−)** : sélectionne les lignes présentes dans la première table mais pas dans la seconde.
   - Ex. : **Trouver les arrêts où la ligne 3 passe mais pas la ligne 8**.
