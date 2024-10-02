@@ -1,3 +1,7 @@
+---
+tags:
+  - cours
+---
 
 # Vault Obsidian M2 IASD
 
@@ -83,3 +87,7 @@ Pour toute demande d'intégration dans le projet, veuillez utiliser le sujet **[
 ---
 
 N'hésitez pas à faire d'autres ajustements si nécessaire. Si vous avez besoin d'aide supplémentaire, je suis là pour vous aider !
+
+
+[[COURS]]
+
