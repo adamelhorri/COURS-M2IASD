@@ -1,3 +1,9 @@
+---
+tags:
+  - progmob
+  - tps
+---
+
 ## Liste de tâches détaillées pour le projet ESP32 avec API RESTful (generé par prompt GPT O1 )
 
 ## Préparation du matériel
