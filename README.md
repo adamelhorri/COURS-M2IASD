@@ -67,14 +67,19 @@ Pour améliorer votre expérience, vous pouvez activer des plugins communautaire
 2. Cliquez sur **Plugins communautaires** dans la barre latérale gauche.
 3. Désactivez le **mode sécurisé** pour permettre l'installation de plugins communautaires.
 4. Cliquez sur **Parcourir** pour explorer et installer des plugins tels que :
-   - **Colored Tags**
-   - **Dataview**
-   - **File Color**
-   - **Highlightr**
-   - **Latex Suite**
-   - **Mind Map**
-   - **Omnisearch**
-   - **Sync Graph Settings**
+   - **Dataview** : permet de requêter au niveau même des notes
+   - **File Color**: colorier les dossiers des notes pour plus de visibilité
+   - **Highlightr**: permets de highlight les notes avec des marqueurs de couleurs differentes
+   - **Latex Suite**: permets l'affichage de caractères mathematiques LaTeX (en entourant de $$element$$)
+   - **Mind Map** : permets de generer un MindMap à partir des notes depuis l'invit de commandes (super utile)
+   - **Omnisearch**: Un geant en terme de recherche intelligente 
+   - **Iconize** : ajoutez des icones là ou vous voulez (extensible pour utiliser vos propres icones)
+   - **PDF Highlights**: ** permets de highlight au niveau de pdfs 
+   - **plantUML** : affiche les diagrammes PlantUML automatiquement à partir de code plantuml
+   - **Recent Files** : affiche les fichiers recents 
+   - **Surfing** : Navigateur WEB integré à Obsidian (énorme comme truc)
+   - **Terminal**:terminal inclut au sein de votre workspace obsidian (utile pour git pull et push facilement)
+
 
 Ces plugins, comme illustré sur la photo, amélioreront votre prise de notes et votre organisation (les docuemntations des ces plugins se trouent au sein de la page de chaqu'un).
 
