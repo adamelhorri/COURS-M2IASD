@@ -67,6 +67,7 @@ Pour améliorer votre expérience, vous pouvez activer des plugins communautaire
 2. Cliquez sur **Plugins communautaires** dans la barre latérale gauche.
 3. Désactivez le **mode sécurisé** pour permettre l'installation de plugins communautaires.
 4. Cliquez sur **Parcourir** pour explorer et installer des plugins tels que :
+   - **Editing ToolBar**: Tollbar similaire à celui de microsoft Word (utiles si pas pro en MarkDown)
    - **Dataview** : permet de requêter au niveau même des notes
    - **File Color**: colorier les dossiers des notes pour plus de visibilité
    - **Highlightr**: permets de highlight les notes avec des marqueurs de couleurs differentes
