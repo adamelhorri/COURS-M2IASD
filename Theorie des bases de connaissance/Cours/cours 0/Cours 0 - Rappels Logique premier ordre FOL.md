@@ -11,7 +11,6 @@ La logique du premier ordre, souvent abrégée en FOL (First Order Logic), est u
 ---
 
 ## 1. Syntaxe
-
 La syntaxe de la logique du premier ordre repose sur la définition d'un **vocabulaire logique** V = (P, C), où :
 
 - **P** représente un ensemble de **prédicats** ou **relations**, chaque prédicat ayant une arité k, c’est-à-dire le nombre d’arguments qu'il peut prendre. L’arité k est un entier supérieur ou égal à 0. Par exemple, un prédicat unitaire prend un seul argument, tandis qu'un prédicat binaire en prend deux.

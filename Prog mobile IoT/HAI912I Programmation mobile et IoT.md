@@ -3,4 +3,7 @@ tags:
   - progmob
   - cours
 ---
-[[Prog mobile IoT/TP1|TP1]]
+## Projet
+[[TODO List Détaillée]]
+## TPs
+[[COURS-M2IASD/Prog mobile IoT/TPS/TP1|TP1]]
