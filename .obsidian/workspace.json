@@ -11,7 +11,7 @@
             "id": "b2b1137472089c0d",
             "type": "leaf",
             "state": {
-              "type": "empty",
+              "type": "graph",
               "state": {}
             }
           }
@@ -139,5 +139,28 @@
     }
   },
   "active": "b2b1137472089c0d",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "NoSQL/Annales/Annales.md",
+    "NoSQL/Annales/Untitled.md",
+    "NoSQL/Annales/EXAM 2022 partie Neo4J.md",
+    "NoSQL/Annales/Prepa CC du 20-11/Fiche revision Cours 1 Neo4J.md",
+    "NoSQL/Annales/Prepa CC du 20-11",
+    "NoSQL/Annales",
+    "NoSQL/Untitled",
+    "NoSQL/Prepa CC du 20-11/Fiche revision Cours 1 Neo4J.md",
+    "NoSQL/Prepa CC du 20-11/Untitled.md",
+    "NoSQL/Cours/Cours 1/cheat sheet revision 1 Neo4J.md",
+    "NoSQL/Prepa CC du 20-11",
+    "NoSQL/Cours/Cours 1/Fiche revision 1 Neo4J.md",
+    "NoSQL/Cours/Cours 1/Fiche revision 1.md",
+    "NoSQL/Cours/Cours 1/Untitled.md",
+    "NoSQL/TPs/TD2.md",
+    "NoSQL/TPs/Untitled.md",
+    "NoSQL/TPs/TD1.md",
+    "NoSQL/Cours/Cours 1/Cours 1 Neo4J.md",
+    "NoSQL/Cours/Cours 1/Cours 1.md",
+    "NoSQL/Cours/Cours 1",
+    "NoSQL/Cours/Untitled",
+    "DATES.md"
+  ]
 }
