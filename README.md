@@ -53,6 +53,12 @@ Obsidian est un puissant outil de gestion des connaissances disponible pour tous
 3. Sélectionnez "Ouvrir un dossier en tant que vault."
 4. Naviguez jusqu'au répertoire où se trouve ce vault et sélectionnez-le.
 
+## Mettre à jour les Notes
+Afin d'avoir accès à toutes les notes de cours recentes , assurez vous de lancer la commande suivante pour mettre à jour le vault :
+```bash
+git pull
+```
+
 ## Activation des Plugins
 
 Pour améliorer votre expérience, vous pouvez activer des plugins communautaires pour de meilleures fonctionnalités et un visuel amélioré :
