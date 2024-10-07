@@ -3,6 +3,7 @@ tags:
   - AdminBDD
   - cours
 ---
+### Easy access : [[Formules mathematiques du cours Index]]
 ### **Partie 1 : Introduction aux Mécanismes d'Indexation et Efficacité des Accès aux Données**
 
 #### **1.1 Retour sur les Blocs Oracle**
