@@ -1,3 +1,9 @@
+---
+tags:
+  - NLP
+  - tps
+---
+## [[TD1 Corrigé]]
 # Natural Language Semantics 2024
 ## Exercises 1
 ### <center>8 October 2024</center>

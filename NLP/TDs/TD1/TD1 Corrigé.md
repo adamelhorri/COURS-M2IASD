@@ -1,7 +1,14 @@
+---
+tags:
+  - NLP
+  - tps
+---
+
 # Résolution détaillée des exercices sur les grammaires AB
 
 Nous allons résoudre ensemble les exercices donnés, en expliquant chaque étape de manière détaillée et en mettant en avant les concepts clés. Nous utiliserons un format arboré pour visualiser les dérivations, ce qui facilitera la compréhension.
 
+## [[Guide Complet sur les Grammaires AB pour Débutants]]
 ## Introduction aux grammaires AB
 
 Avant de commencer, il est important de comprendre ce qu'est une **grammaire AB**. En linguistique, une grammaire AB est un type de grammaire catégorielle qui utilise des formules pour représenter les catégories grammaticales des mots et la manière dont ils se combinent pour former des phrases.
