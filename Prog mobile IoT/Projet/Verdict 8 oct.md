@@ -1,4 +1,9 @@
-
+---
+tags:
+  - progmob
+  - tps
+---
+thermo resistance
 # 📋 Verdict Général du Projet TTGO T-Display avec ESP32
 
 ## 🎯 **Objectifs du Projet**

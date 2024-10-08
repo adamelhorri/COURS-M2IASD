@@ -103,7 +103,7 @@
                       },
                       "serial": {
                         "columns": 171,
-                        "data": "adam.el-horri@etu.umontpellier.fr@fds0629:~/Documents/COURS-M2IASD$ git add",
+                        "data": "adam.el-horri@etu.umontpellier.fr@fds0629:~/Documents/COURS-M2IASD$ git add .\r\nadam.el-horri@etu.umontpellier.fr@fds0629:~/Documents/COURS-M2IASD$ git commit -m \"8 oct IoT\"\r\n[main 5338ddc] 8 oct IoT\r\n 19 files changed, 24846 insertions(+), 43 deletions(-)\r\n create mode 100644 .obsidian/community-plugins.json\r\n create mode 100644 .obsidian/plugins/obsidian-latex-suite/main.js\r\n create mode 100644 .obsidian/plugins/obsidian-latex-suite/manifest.json\r\n create mode 100644 .obsidian/plugins/obsidian-latex-suite/styles.css\r\n create mode 100644 .obsidian/plugins/obsidian-plantuml/main.js\r\n create mode 100644 .obsidian/plugins/obsidian-plantuml/manifest.json\r\n create mode 100644 .obsidian/plugins/obsidian-plantuml/styles.css\r\n create mode 100644 .obsidian/plugins/terminal/data.json\r\n create mode 100644 .obsidian/plugins/terminal/main.js\r\n create mode 100644 .obsidian/plugins/terminal/manifest.json\r\n create mode 100644 .obsidian/plugins/terminal/styles.css\r\n create mode 100644 Prog mobile IoT/Projet/Verdict 8 oct.md\r\nadam.el-horri@etu.umontpellier.fr@fds0629:~/Documents/COURS-M2IASD$ git push\r\nÉnumération des objets: 45, fait.\r\nDécompte des objets: 100% (45/45), fait.\r\nCompression par delta en utilisant jusqu'à 12 fils d'exécution\r\nCompression des objets: 100% (29/29), fait.\r\nÉcriture des objets: 100% (31/31), 834.01 Kio | 6.95 Mio/s, fait.\r\nTotal 31 (delta 5), réutilisés 1 (delta 0), réutilisés du pack 0\r\nremote: Resolving deltas: 100% (5/5), completed with 5 local objects.\r\nTo https://github.com/adamelhorri/COURS-M2IASD.git\r\n   6be680c..5338ddc  main -> main\r\nadam.el-horri@etu.umontpellier.fr@fds0629:~/Documents/COURS-M2IASD$ git add .\r\n",
                         "rows": 23
                       }
                     }
@@ -241,10 +241,10 @@
   "active": "32964394c2ab5b36",
   "lastOpenFiles": [
     "Prog mobile IoT/Projet/Verdict 8 oct.md",
+    "Prog mobile IoT/HAI912I Programmation mobile et IoT.md",
     "Theorie des bases de connaissance/Cours/cours 3/Cours 3.md",
     "Prog mobile IoT/Projet/TODO List Détaillée.md",
     "Prog mobile IoT/Projet/Projet.md",
-    "Prog mobile IoT/HAI912I Programmation mobile et IoT.md",
     "NoSQL/TPs/TPs NoSQL.md",
     "NoSQL/HAI914I No SQL.md",
     "NoSQL/TPs/TD1.md",
