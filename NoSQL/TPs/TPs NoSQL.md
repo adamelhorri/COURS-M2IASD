@@ -3,5 +3,5 @@ tags:
   - tps
   - nosql
 ---
-[[TD1]]
+[[COURS-M2IASD/NoSQL/TPs/TD1]]
 [[TD2]]
