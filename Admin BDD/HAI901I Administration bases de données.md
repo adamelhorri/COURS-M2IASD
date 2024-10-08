@@ -9,7 +9,7 @@ tags:
 ---
 ## [[TPS ADMINBDD]]
 ---
-## [[COURS-M2IASD/Admin BDD/Annales/Annales]]
+## [[Admin BDD/Annales/Annales|Annales]]
 
 
 ## Infos
