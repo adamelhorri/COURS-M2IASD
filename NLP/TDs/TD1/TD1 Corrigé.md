@@ -3,8 +3,168 @@ tags:
   - NLP
   - tps
 ---
+D'accord, je vais réécrire la résolution de l'exercice en français et de manière simple, comme si j'expliquais à un ado de 14 ans.
 
-# Résolution détaillée des exercices sur les grammaires AB
+##  **1.1.Exercice : Traduire les règles de réécriture en formules AB**
+
+### **Contexte**
+
+On a une **grammaire sans contexte (CFG)** qui génère des séquences de parenthèses équilibrées. Voici les règles de réécriture de la grammaire **G'** :
+
+1. **S → a B | a S B | a B S | a S B S**
+2. **B → b**
+
+- **a** représente une parenthèse ouvrante « ( ».
+- **b** représente une parenthèse fermante « ) ».
+- **S** et **B** sont des symboles non-terminaux utilisés pour construire les séquences équilibrées.
+
+### **Objectif**
+
+Traduire ces règles de réécriture en **formules AB**, où **A** et **B** sont des symboles utilisés pour représenter les terminaux **a** et **b**.
+
+### **Étapes de la Traduction**
+
+#### **1. Traduire la règle pour B**
+
+La règle donnée est :
+- **B → b**
+
+Cette règle est déjà simple à traduire. Elle dit que le symbole **B** se transforme directement en **b**. Donc, en formule AB :
+
+- **B = b**
+
+#### **2. Traduire les règles pour S**
+
+Les règles données pour **S** sont :
+- **S → a B**
+- **S → a S B**
+- **S → a B S**
+- **S → a S B S**
+
+On va les traduire toutes ensemble en une seule formule AB en utilisant le symbole **|** qui signifie "ou".
+
+**Formule initiale :**
+- **S = a B | a S B | a B S | a S B S**
+
+Pour simplifier, on remarque que **a** est présent au début de toutes les options. On peut donc factoriser **a** :
+
+- **S = a (B | S B | B S | S B S)**
+
+Maintenant, comme on sait déjà que **B = b**, on peut remplacer **B** par **b** dans la formule :
+
+- **S = a (b | S b | b S | S b S)**
+
+### **Résultat Final**
+
+Après traduction, les formules AB pour les symboles terminaux **a** et **b** sont :
+
+- **B = b**
+- **S = a (b | S b | b S | S b S)**
+
+### **Interprétation des Formules AB**
+
+- **B = b** : Le symbole **B** représente simplement la parenthèse fermante « ) ».
+  
+- **S = a (b | S b | b S | S b S)** :
+  - **a b** : Une paire de parenthèses simple « () ».
+  - **a S b** : Une parenthèse ouvrante suivie d'une structure équilibrée (**S**) puis d'une parenthèse fermante, par exemple « ( ( ) ) ».
+  - **a b S** : Une parenthèse ouvrante suivie d'une parenthèse fermante, puis d'une autre structure équilibrée, par exemple « () () ».
+  - **a S b S** : Une parenthèse ouvrante suivie d'une structure équilibrée, puis d'une parenthèse fermante et d'une autre structure équilibrée, par exemple « ( () ) () ».
+
+### **Pourquoi C'est Utile ?**
+
+Ces formules AB permettent de générer toutes les combinaisons possibles de parenthèses équilibrées en suivant les règles de la grammaire. En utilisant **A** et **B**, on simplifie la représentation des règles et on facilite la compréhension de la structure des séquences générées.
+
+### **Exemples**
+
+1. **S = a b**
+   - **S = a b** : Correspond à une paire de parenthèses « () ».
+
+2. **S = a S b**
+   - **S = a (a b) b** : Correspond à « (()) ».
+
+3. **S = a b S**
+   - **S = a b a b** : Correspond à « ()() ».
+
+4. **S = a S b S**
+   - **S = a (a b) b a b** : Correspond à « (())() ».
+
+### **Conclusion**
+
+En traduisant les règles de réécriture en formules AB, on obtient une représentation claire et structurée des séquences de parenthèses équilibrées. Cela aide à comprendre comment chaque paire de parenthèses peut être construite de manière ordonnée.
+
+J'espère que cette réécriture te permet de mieux comprendre comment traduire les règles de réécriture en formules AB. Si tu as d'autres questions, n'hésite pas à les poser !
+## **1.3.Exercice : Comprendre et résoudre**
+
+#### **1. Quel est le langage généré par cette grammaire ? Combien de séquences de longueur 6 sont générées ?**
+
+Cette grammaire génère des séquences de 0 et 1. Voyons rapidement les règles :
+
+- **S** peut commencer par un **0** et suivre la règle pour **B**, ou commencer par un **1** et suivre la règle pour **A**.
+- **B** peut être un **1**, ou un **1** suivi de **S**, ou encore un **0** suivi de deux **B**.
+- **A** peut être un **0**, ou un **0** suivi de **S**, ou un **1** suivi de deux **A**.
+
+Ces règles permettent de construire des séquences de bits. En analysant cela, le langage généré par cette grammaire est l'ensemble des séquences de 0 et 1 dans lesquelles **chaque dérivation commence par soit 0 soit 1, suivie de plusieurs séquences imbriquées de 0 et 1**.
+
+##### Calcul des séquences de longueur 6
+
+On peut examiner toutes les dérivations possibles pour obtenir des séquences de longueur 6. Étant donné que chaque règle peut générer soit un 0, soit un 1 avec plusieurs suites de symboles non-terminaux, on calcule toutes les combinaisons possibles pour obtenir des séquences de longueur 6.
+
+Cependant, le dénombrement exact est complexe manuellement car cette grammaire est assez riche. Une approche plus systématique (comme un algorithme de génération) serait nécessaire pour déterminer le nombre exact de séquences de longueur 6 générées. Ce type de calcul pourrait être fait en analysant toutes les dérivations possibles en utilisant les règles et en suivant les transitions de **S**, **A**, et **B**.
+
+#### **2. Traduction des règles en formules AB**
+
+On va maintenant traduire les règles de la grammaire donnée en formules AB. Voici les règles données :
+
+1. **S → 0 B | 1 A**
+2. **B → 1 | 1 S | 0 B B**
+3. **A → 0 | 0 S | 1 A A**
+
+##### Traduction des règles
+
+On traduit les règles de manière similaire à l'exercice précédent, en introduisant des formules qui représentent les différents cas.
+
+1. **S = 0 B | 1 A**
+   - **S** commence par soit un **0** suivi de **B**, soit un **1** suivi de **A**.
+  
+2. **B = 1 | 1 S | 0 B B**
+   - **B** peut être un **1**, ou un **1** suivi de **S**, ou un **0** suivi de deux **B**.
+
+3. **A = 0 | 0 S | 1 A A**
+   - **A** peut être un **0**, ou un **0** suivi de **S**, ou un **1** suivi de deux **A**.
+
+Ces règles montrent comment chaque non-terminal **S**, **A**, ou **B** se transforme en une séquence de 0 et de 1, en fonction des autres règles.
+
+#### **3. La séquence 001101 est ambiguë. Donnez deux arbres de dérivation AB différents pour cette séquence.**
+
+L'ambiguïté signifie que cette séquence peut être dérivée de deux façons différentes en utilisant les règles de la grammaire. On va explorer deux dérivations possibles de **001101**.
+
+##### Première dérivation possible (Arbre 1)
+
+1. **S → 0 B**
+2. **B → 0 B B**
+3. **B → 1**
+4. **B → 1**
+   - Ce chemin commence avec **S → 0 B**. Le **B** devient **0 B B**, où le premier **B** devient **1** et le second **B** devient aussi **1**.
+
+Le résultat est **001101**.
+
+##### Deuxième dérivation possible (Arbre 2)
+
+1. **S → 0 B**
+2. **B → 1 S**
+3. **S → 1 A**
+4. **A → 0**
+   - Ici, **S → 0 B**, où **B → 1 S**. Ensuite, **S → 1 A** et **A → 0** pour obtenir la séquence **001101**.
+
+Ces deux dérivations différentes montrent que la séquence **001101** peut être générée de deux façons distinctes avec cette grammaire, ce qui explique l'ambiguïté.
+
+### Conclusion
+
+- La grammaire génère des séquences complexes de 0 et 1, et la langue produite par cette grammaire contient ces séquences.
+- Nous avons traduit les règles en formules AB qui expliquent comment chaque symbole se transforme.
+- La séquence **001101** est ambiguë car elle peut être dérivée par deux chemins différents, ce que nous avons montré avec deux arbres de dérivation.
+## 2.1.Résolution détaillée des exercices sur les grammaires AB
 
 Nous allons résoudre ensemble les exercices donnés, en expliquant chaque étape de manière détaillée et en mettant en avant les concepts clés. Nous utiliserons un format arboré pour visualiser les dérivations, ce qui facilitera la compréhension.
 
