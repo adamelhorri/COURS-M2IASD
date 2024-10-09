@@ -3,6 +3,7 @@ tags:
   - AdminBDD
   - tps
 ---
+resolution: [[Resolution TP Noté 2023]]
 ## cheat sheet : [[Cheat sheet TP noté INDEXs]]
 ## contenu tableau :*
 
