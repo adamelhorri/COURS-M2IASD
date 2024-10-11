@@ -3,322 +3,599 @@ tags:
   - AdminBDD
   - cours
 ---
-Voici le cheat sheet amélioré avec des commentaires détaillés dans chaque chunk de code. Les commentaires sont expliqués étape par étape comme si vous les expliquiez à une personne de 17 ans, afin de rendre le code plus compréhensible. pour comprendre ce qu'on fait lire d'abord [[Lez et marta discussion sur les INDEXs]]
+# **Documentation Complète sur les Index, Contraintes, Vues Méta-Schéma et Paquetage DBMS_ROWID**
 
 ---
 
-### **1. Création de Table et Contraintes**
-
-**Mots-clés :**
-- Création de table
-- Clé primaire
-- Clé étrangère
-
-**Exemple :**
-
-- **Table `COMMUNE` avec clé primaire :**
-    ```sql
-    -- On crée une nouvelle table appelée COMMUNE avec deux colonnes : CODEINSEE et NUMDEP.
-    CREATE TABLE COMMUNE (
-        -- CODEINSEE est de type chaîne de caractères (VARCHAR2) de longueur 10
-        CODEINSEE VARCHAR2(10),
-        -- NUMDEP est un nombre (NUMBER)
-        NUMDEP NUMBER,
-        -- On définit la clé primaire sur la colonne CODEINSEE, 
-        -- cela signifie que chaque valeur de CODEINSEE doit être unique et ne peut pas être vide.
-        PRIMARY KEY (CODEINSEE) CONSTRAINT COMMUNE_PK
-    );
-    ```
-
-- **Table `DEPARTEMENT` avec clé primaire et clé étrangère sur `NUMDEP` :**
-    ```sql
-    -- On crée une table appelée DEPARTEMENT avec une colonne NUMDEP
-    CREATE TABLE DEPARTEMENT (
-        -- NUMDEP est la clé primaire, chaque département aura un numéro unique
-        NUMDEP NUMBER PRIMARY KEY
-        -- Autres colonnes possibles comme le nom du département
-    );
-
-    -- On ajoute une contrainte de clé étrangère sur la table COMMUNE
-    -- Cela signifie que la colonne NUMDEP de COMMUNE doit correspondre
-    -- à une valeur existante de NUMDEP dans la table DEPARTEMENT
-    ALTER TABLE COMMUNE 
-    ADD CONSTRAINT FK_NUMDEP 
-    FOREIGN KEY (NUMDEP) 
-    REFERENCES DEPARTEMENT(NUMDEP);
-    ```
+Cette documentation est conçue pour vous aider à réussir n'importe quel TP (travaux pratiques) similaire portant sur les index, les contraintes, la consultation des vues méta-schéma, et la manipulation du paquetage PL/SQL `DBMS_ROWID`. Elle est organisée par thèmes et comprend des explications détaillées ainsi que des exemples de code que vous pouvez utiliser directement.
 
 ---
 
-### **2. Création d’un Index Non Unique**
+## **Table des Matières**
 
-**Mots-clés :**
-- Index non unique
-- Jointures
-- Index sur colonne
-
-**Exemple :**
-- **Création d’un index non unique sur `NUMDEP` :**
-    ```sql
-    -- On crée un index appelé numdep_idx sur la colonne NUMDEP de la table COMMUNE.
-    -- Cela permettra de rendre les recherches sur NUMDEP plus rapides lors de jointures entre COMMUNE et DEPARTEMENT.
-    CREATE INDEX numdep_idx ON COMMUNE(NUMDEP);
-    ```
-
----
-
-### **3. Consultation des Statistiques d'Index**
-
-**Mots-clés :**
-- Vue `user_indexes`
-- Statistiques d'index
-- Hauteur de l'arbre
-- Blocs branches et feuilles
-
-**Exemple :**
-- **Consulter la hauteur de l'index :**
-    ```sql
-    -- Cette requête sélectionne le nom de l'index, sa hauteur (blevel + 1) et le nom de la table associée
-    -- L'attribut blevel correspond à la profondeur de l'arbre, auquel on ajoute 1 pour obtenir la hauteur complète.
-    SELECT index_name, blevel+1 AS height 
-    FROM USER_INDEXES 
-    WHERE index_name = 'COMMUNE_PK'; -- On cherche l'index appelé 'COMMUNE_PK'
-    ```
-
-- **Collecter les statistiques d’un index :**
-    ```sql
-    -- On met à jour les statistiques de l'index COMMUNE_PK afin d'obtenir des informations précises sur sa structure.
-    ANALYZE INDEX COMMUNE_PK VALIDATE STRUCTURE;
-
-    -- Cette requête récupère le nom de l'index, l'espace mémoire qu'il occupe, 
-    -- la clé la plus fréquente, le nombre de lignes dans les feuilles, 
-    -- le nombre de lignes dans les branches et la hauteur de l'arbre
-    SELECT name, btree_space, most_repeated_key, lf_rows, br_rows, height 
-    FROM INDEX_STATS 
-    WHERE name = 'COMMUNE_PK';
-    ```
+1. [Création et Gestion des Tables et Contraintes](#section1)
+   - Création de tables
+   - Contraintes de clé primaire
+   - Contraintes de clé étrangère
+   - Contraintes CHECK et UNIQUE
+2. [Index en Bases de Données](#section2)
+   - Création d'index
+   - Types d'index
+   - Gestion des index
+3. [Consultation des Vues Méta-Schéma](#section3)
+   - Vues USER_INDEXES et INDEX_STATS
+   - Mise à jour des statistiques
+   - Analyse des index
+4. [Paquetage PL/SQL DBMS_ROWID](#section4)
+   - Compréhension des ROWID
+   - Fonctions du paquetage DBMS_ROWID
+   - Manipulation avancée des ROWID
+5. [Procédures PL/SQL](#section5)
+   - Création de procédures
+   - Gestion des exceptions
+   - Exemples de procédures
+6. [Optimisation des Requêtes et des Index](#section6)
+   - Utilisation des index pour optimiser les requêtes
+   - Analyse des plans d'exécution
+   - Facteur de blocage et performance
+7. [Sécurité et Permissions](#section7)
+   - Gestion des permissions sur les tables et index
+   - Vues d'administration
+8. [Bonnes Pratiques et Conseils](#section8)
+   - Bonnes pratiques pour les index
+   - Maintenance des index
+   - Documentation et organisation du code
 
 ---
 
-### **4. Calcul du Facteur de Blocage**
+<a name="section1"></a>
+## **1. Création et Gestion des Tables et Contraintes**
 
-**Mots-clés :**
-- Facteur de blocage
-- Taille des tuples
-- Espace mémoire
+### **1.1. Création de Tables**
 
-**Exemple :**
-- **Calcul du facteur de blocage pour la table `COMMUNE` :**
-    ```sql
-    -- On récupère le nombre de blocs utilisés par la table COMMUNE et la longueur moyenne des enregistrements (avg_row_len).
-    -- Cela nous aide à calculer combien de tuples (lignes) peuvent être stockés dans un bloc de données.
-    SELECT blocks, avg_row_len 
-    FROM USER_TABLES 
-    WHERE table_name = 'COMMUNE';
-    ```
+#### **Syntaxe Générale**
 
-- **Calcul de la taille d’un bloc pour les enregistrements :**
-    - Taille d'un bloc disponible : **7000 octets** (on a retiré l'espace utilisé pour les métadonnées)
-    - Si chaque enregistrement fait **100 octets**, on peut calculer combien de lignes tiennent dans un bloc :
-    ```sql
-    -- Facteur de blocage : c'est le nombre d'enregistrements qu'on peut mettre dans un bloc de 7000 octets.
-    -- On divise simplement 7000 par la taille moyenne d'un enregistrement.
-    SELECT 7000 / avg_row_len FROM USER_TABLES WHERE table_name = 'COMMUNE';
-    ```
-
----
-
-### **5. Manipulation des ROWID et PL/SQL**
-
-**Mots-clés :**
-- ROWID
-- Paquetage `DBMS_ROWID`
-- Procédure PL/SQL
-
-**Exemple :**
-- **Procédure pour afficher les enregistrements dans le même bloc que l'enregistrement donné :**
-    ```plsql
-    -- On crée une procédure PL/SQL qui récupère les enregistrements du même bloc que celui d'un enregistrement donné.
-    CREATE OR REPLACE PROCEDURE MEMEBLOCQUE(p_codeINSEE IN VARCHAR2) AS
-        row_id ROWID; -- On déclare une variable pour stocker le ROWID de l'enregistrement
-    BEGIN
-        -- On récupère le ROWID de l'enregistrement avec le code INSEE donné
-        SELECT ROWID INTO row_id FROM COMMUNE WHERE codeINSEE = p_codeINSEE;
-        
-        -- On parcourt tous les enregistrements qui se trouvent dans le même bloc que celui du ROWID récupéré
-        FOR r IN (
-            SELECT codeINSEE, nomcommaj 
-            FROM COMMUNE 
-            WHERE DBMS_ROWID.ROWID_BLOCK_NUMBER(ROWID) = DBMS_ROWID.ROWID_BLOCK_NUMBER(row_id)
-        ) LOOP
-            -- On affiche chaque enregistrement trouvé dans le même bloc
-            DBMS_OUTPUT.PUT_LINE(r.codeINSEE || ' ' || r.nomcommaj);
-        END LOOP;
-    END;
-    ```
-
-- **Afficher les informations du ROWID pour un enregistrement donné :**
-    ```sql
-    -- Cette requête utilise le ROWID pour récupérer le numéro de bloc et l'objet auquel appartient l'enregistrement.
-    SELECT DBMS_ROWID.ROWID_BLOCK_NUMBER(rowid), DBMS_ROWID.ROWID_OBJECT(rowid)
-    FROM COMMUNE
-    WHERE codeINSEE = '34172'; -- On récupère les informations pour le code INSEE 34172
-    ```
-
----
-
-### **6. Création et Gestion des Index B-Tree**
-
-**Mots-clés :**
-- Index B-Tree
-- Organisation de table
-- Index unique
-
-**Exemple :**
-- **Création d’un index unique sur `code_insee` dans la table `COMMUNE` :**
-    ```sql
-    -- On crée un index unique appelé com_idx sur la colonne code_insee.
-    -- Un index unique signifie que les valeurs dans la colonne code_insee doivent être uniques.
-    CREATE UNIQUE INDEX com_idx ON COMMUNE (code_insee);
-    ```
-
-- **Désactiver un index :**
-    ```sql
-    -- Cette commande désactive l'index appelé com_idx.
-    -- Cela peut être utile si l'on veut temporairement ne plus utiliser cet index sans le supprimer.
-    ALTER INDEX com_idx DISABLE;
-    ```
-
-- **Reconstruction d’un index :**
-    ```sql
-    -- On utilise cette commande pour reconstruire un index qui a été marqué comme inutilisable.
-    -- Cela permet de le remettre en service après une désactivation ou une modification.
-    ALTER INDEX commune_pk REBUILD;
-    ```
-
----
-
-### **7. Index Bitmap**
-
-**Mots-clés :**
-- Index bitmap
-- Cardinalité faible
-- Requêtes agrégées
-
-**Exemple :**
-- **Création d’un index bitmap sur la colonne `fonction` :**
-    ```sql
-    -- On crée un index bitmap sur la colonne fonction de la table EMP.
-    -- Un index bitmap est efficace lorsque la colonne a un nombre limité de valeurs distinctes (comme des catégories).
-    CREATE BITMAP INDEX fonction_idx ON EMP(fonction);
-    ```
-
-- **Requête d’agrégation avec index bitmap :**
-    ```sql
-    -- Cette requête compte combien d'employés ont la fonction de 'président'.
-    -- Grâce à l'index bitmap, la recherche est rapide car on peut simplement compter les 1 dans le bitmap correspondant.
-    SELECT COUNT(*) FROM EMP WHERE fonction = 'président';
-    ```
-
----
-
-### **8. Index de Hachage**
-
-**Mots-clés :**
-- Index de hachage
-- Recherche exacte
-- Fonction de hachage
-
-**Exemple :**
-- **Création d’une table avec partitionnement par hachage :**
 ```sql
-    -- On crée un cluster de tables appelé emp_cluster qui regroupera les enregistrements basés sur la colonne num.
-    -- Un cluster permet de stocker les enregistrements qui partagent une même valeur de clé ensemble.
-    -- SIZE 500 indique la taille estimée de chaque tuple (en octets) et HASHKEYS indique le nombre de clés dans le cluster.
-    CREATE CLUSTER emp_cluster (num NUMBER(5,0)) 
-        SIZE 500 
-        HASHKEYS 1500;
+CREATE TABLE nom_table (
+    colonne1 TYPE_DONNÉE [CONTRAINTES],
+    colonne2 TYPE_DONNÉE [CONTRAINTES],
+    ...
+    [CONTRAINTE_TABLE]
+);
+```
 
-    -- Ensuite, on crée une table employe qui sera liée au cluster emp_cluster.
-    -- Cela signifie que les enregistrements de la table employe seront stockés dans le cluster basé sur num.
-    CREATE TABLE employe (
-        num NUMBER(5,0) PRIMARY KEY, -- num est la clé primaire de la table employe
-        name VARCHAR(15) -- name est le nom de l'employé
-    ) CLUSTER emp_cluster (num); -- On indique que cette table est dans le cluster emp_cluster, basé sur la colonne num
+#### **Exemple : Création de la table DEPARTEMENT**
+
+```sql
+CREATE TABLE DEPARTEMENT (
+    NUMDEP VARCHAR2(3) NOT NULL, -- Numéro du département
+    NOMDEP VARCHAR2(50),         -- Nom du département
+    CONSTRAINT DEPARTEMENT_PK PRIMARY KEY (NUMDEP) -- Clé primaire sur NUMDEP
+);
+```
+
+### **1.2. Contraintes de Clé Primaire**
+
+- Une **clé primaire** est un attribut ou un ensemble d'attributs qui identifie de manière unique chaque enregistrement d'une table.
+- Définie au niveau de la colonne ou de la table.
+
+#### **Au Niveau de la Colonne**
+
+```sql
+colonne TYPE_DONNÉE PRIMARY KEY
+```
+
+#### **Au Niveau de la Table**
+
+```sql
+CONSTRAINT nom_contrainte PRIMARY KEY (colonne1, colonne2)
+```
+
+#### **Exemple : Clé primaire sur CODEINSEE dans COMMUNE**
+
+```sql
+CREATE TABLE COMMUNE (
+    CODEINSEE VARCHAR2(5) NOT NULL,
+    NOMCOM VARCHAR2(100),
+    NUMDEP VARCHAR2(3) NOT NULL,
+    CONSTRAINT COMMUNE_PK PRIMARY KEY (CODEINSEE)
+);
+```
+
+### **1.3. Contraintes de Clé Étrangère**
+
+- Une **clé étrangère** établit une relation entre deux tables en faisant référence à la clé primaire d'une autre table.
+- Empêche l'insertion de valeurs qui n'existent pas dans la table référencée.
+
+#### **Syntaxe**
+
+```sql
+ALTER TABLE nom_table
+ADD CONSTRAINT nom_contrainte
+FOREIGN KEY (colonne_locale)
+REFERENCES table_referencée (colonne_referencée);
+```
+
+#### **Exemple : Clé étrangère sur NUMDEP dans COMMUNE**
+
+```sql
+ALTER TABLE COMMUNE
+ADD CONSTRAINT COMMUNE_FK_NUMDEP
+FOREIGN KEY (NUMDEP)
+REFERENCES DEPARTEMENT (NUMDEP);
+```
+
+### **1.4. Contraintes CHECK et UNIQUE**
+
+#### **Contrainte CHECK**
+
+- Assure que les valeurs d'une colonne respectent une condition donnée.
+
+```sql
+ALTER TABLE nom_table
+ADD CONSTRAINT nom_contrainte
+CHECK (condition);
+```
+
+#### **Exemple : Contraindre POPULATION à être positive**
+
+```sql
+ALTER TABLE COMMUNE
+ADD CONSTRAINT COMMUNE_CHK_POPULATION
+CHECK (POPULATION >= 0);
+```
+
+#### **Contrainte UNIQUE**
+
+- Garantit l'unicité des valeurs dans une colonne ou un ensemble de colonnes.
+
+```sql
+ALTER TABLE nom_table
+ADD CONSTRAINT nom_contrainte
+UNIQUE (colonne1, colonne2);
+```
+
+#### **Exemple : Unicité sur NOMCOM**
+
+```sql
+ALTER TABLE COMMUNE
+ADD CONSTRAINT COMMUNE_UNQ_NOMCOM
+UNIQUE (NOMCOM);
 ```
 
 ---
 
-### **9. Questions de TD sur les Index et Arbres B+**
+<a name="section2"></a>
+## **2. Index en Bases de Données**
 
-**Mots-clés :**
-- Hauteur d’un arbre B+
-- Coût d'accès à un bloc
-- Insertion dans un B-Tree
+### **2.1. Création d'Index**
 
-**Exemple :**
-- **Calcul du facteur de blocage pour une table de 50 000 tuples :**
-    ```sql
-    -- On calcule combien de tuples (lignes) peuvent tenir dans un bloc de données.
-    -- Taille disponible dans un bloc : 7000 octets
-    -- Taille d’un tuple : 100 octets
-    -- Facteur de blocage = 7000 / taille d’un tuple = nombre de tuples par bloc.
-    SELECT 7000 / 100 AS facteur_de_blocage; -- Ici, chaque bloc peut contenir 70 tuples
-    ```
+- Un **index** améliore les performances des requêtes en permettant un accès rapide aux lignes d'une table.
+- Créé sur une ou plusieurs colonnes.
 
-- **Requête sur l'attribut clé avec un B+-Tree :**
-    ```sql
-    -- Cette requête recherche un enregistrement dans la table EMP basé sur l'attribut clé Num.
-    -- Grâce à l'index B+Tree, on parcourt rapidement l'index pour trouver l'enregistrement correspondant à Num = 12345.
-    SELECT COUNT(*) 
-    FROM EMP 
-    WHERE Num = 12345; -- Num est le numéro unique de l'employé
-    ```
+#### **Syntaxe**
 
-- **Calcul de la hauteur d’un arbre B+ (Exemple TD) :**
-    ```sql
-    -- On calcule la hauteur de l'arbre B+ pour une table de 50 000 enregistrements.
-    -- Taille d’un enregistrement d'index : 20 octets
-    -- Taille du bloc : 8192 octets
-    -- Facteur de blocage pour l'index = taille du bloc / taille d'un enregistrement d'index.
-    -- On calcule ensuite combien de niveaux sont nécessaires pour stocker 50 000 enregistrements.
-    SELECT 8192 / 20 AS facteur_de_blocage_index; -- Chaque bloc d’index peut contenir environ 409 enregistrements
+```sql
+CREATE [UNIQUE] INDEX nom_index
+ON nom_table (colonne1 [, colonne2, ...]);
+```
 
-    -- Ensuite, on calcule le nombre de blocs nécessaires pour stocker 50 000 enregistrements dans l'index.
-    -- Le résultat nous donnera la hauteur de l'arbre B+ (en nombre de niveaux).
-    SELECT CEIL(50000 / 409) AS nombre_de_blocs;
-    ```
+#### **Exemple : Index non unique sur NUMDEP**
 
-- **Coût d'accès avec et sans tuple dans un B+-Tree :**
-    ```sql
-    -- Si le tuple existe dans la table :
-    -- On parcourt en moyenne log2(n) blocs, où n est le nombre total de blocs de l'index.
-    -- Le coût en nombre de blocs pour récupérer un tuple existant dans un arbre B+ est log2(nombre de blocs dans l'arbre).
-    SELECT LOG(2, nombre_de_blocs) AS cout_acces_si_existe;
-    
-    -- Si le tuple n'existe pas, on doit parcourir tous les blocs à la recherche du tuple manquant.
-    -- Le coût est donc plus élevé.
-    SELECT nombre_de_blocs AS cout_acces_si_pas_existe;
-    ```
+```sql
+CREATE INDEX numdep_idx
+ON COMMUNE (NUMDEP);
+```
 
-- **Ajout d’un niveau intermédiaire dans un B-Tree :**
-    ```sql
-    -- On suppose que l'arbre a actuellement une hauteur de 2 niveaux et peut contenir 50 000 tuples.
-    -- On cherche combien de tuples supplémentaires il faudrait ajouter pour qu'un nouveau niveau soit nécessaire.
-    -- Chaque niveau peut contenir un certain nombre de pointeurs vers les blocs enfants.
-    -- On calcule combien de tuples peuvent être contenus dans un arbre de hauteur h+1.
-    SELECT (409 * 409) AS capacite_arbre_niveau_supplementaire; 
-    -- Ici, 409 est le facteur de blocage pour chaque niveau, et on le multiplie par lui-même pour calculer la capacité d'un niveau supplémentaire.
-    ```
+### **2.2. Types d'Index**
+
+#### **Index Unique**
+
+- Empêche les valeurs dupliquées dans les colonnes indexées.
+
+```sql
+CREATE UNIQUE INDEX nom_index
+ON nom_table (colonne);
+```
+
+#### **Index Composite**
+
+- Indexe plusieurs colonnes ensemble.
+
+```sql
+CREATE INDEX nom_index
+ON nom_table (colonne1, colonne2);
+```
+
+#### **Index Bitmap**
+
+- Utilisé pour des colonnes avec peu de valeurs distinctes (faible cardinalité).
+
+```sql
+CREATE BITMAP INDEX nom_index
+ON nom_table (colonne);
+```
+
+#### **Index Fonctionnel**
+
+- Indexe le résultat d'une fonction ou d'une expression.
+
+```sql
+CREATE INDEX nom_index
+ON nom_table (fonction(colonne));
+```
+
+#### **Exemple : Index fonctionnel sur UPPER(NOMCOM)**
+
+```sql
+CREATE INDEX idx_upper_nomcom
+ON COMMUNE (UPPER(NOMCOM));
+```
+
+### **2.3. Gestion des Index**
+
+#### **Suppression d'un Index**
+
+```sql
+DROP INDEX nom_index;
+```
+
+#### **Exemple : Supprimer l'index numdep_idx**
+
+```sql
+DROP INDEX numdep_idx;
+```
+
+#### **Renommer un Index**
+
+```sql
+ALTER INDEX nom_index_original
+RENAME TO nouveau_nom_index;
+```
+
+#### **Exemple : Renommer COMMUNE_PK en pk_commune_codeinsee**
+
+```sql
+ALTER INDEX COMMUNE_PK
+RENAME TO pk_commune_codeinsee;
+```
 
 ---
 
-### **Résumé et Astuces**
+<a name="section3"></a>
+## **3. Consultation des Vues Méta-Schéma**
 
-- Utilisez **les vues d'index** (`USER_INDEXES`, `INDEX_STATS`) pour récupérer des informations précises sur les index dans votre base de données.
-- Utilisez des **index B-Tree** pour des colonnes ayant des valeurs uniques ou des plages de valeurs à rechercher.
-- Préférez les **index bitmap** pour les colonnes à faible cardinalité (nombre limité de valeurs différentes).
-- Les **index de hachage** sont parfaits pour des recherches exactes et rapides.
-- **Analysez régulièrement vos index** avec `ANALYZE INDEX` pour garantir des performances optimales.
+### **3.1. Vues Principales**
 
-Ce cheat sheet vous fournit les éléments essentiels pour gérer les index et les B-Trees dans un TP ou un exercice. N’hésitez pas à copier, commenter, et adapter les commandes SQL selon vos besoins spécifiques.
+#### **USER_INDEXES**
+
+- Contient des informations sur les index de l'utilisateur.
+
+```sql
+SELECT * FROM USER_INDEXES;
+```
+
+#### **INDEX_STATS**
+
+- Fournit des statistiques détaillées sur un index après analyse.
+
+```sql
+SELECT * FROM INDEX_STATS;
+```
+
+### **3.2. Mise à Jour des Statistiques**
+
+- Les statistiques doivent être à jour pour obtenir des informations précises.
+
+#### **Analyser une Table**
+
+```sql
+ANALYZE TABLE nom_table COMPUTE STATISTICS;
+```
+
+#### **Analyser un Index**
+
+```sql
+ANALYZE INDEX nom_index VALIDATE STRUCTURE;
+```
+
+#### **Exemple : Analyser l'index COMMUNE_PK**
+
+```sql
+ANALYZE INDEX COMMUNE_PK VALIDATE STRUCTURE;
+```
+
+### **3.3. Exemples de Requêtes**
+
+#### **Obtenir la Hauteur d'un Index**
+
+```sql
+SELECT blevel + 1 AS hauteur
+FROM USER_INDEXES
+WHERE index_name = 'NOM_INDEX';
+```
+
+#### **Obtenir les Statistiques d'un Index**
+
+```sql
+SELECT name, btree_space, lf_rows, br_rows, height
+FROM INDEX_STATS;
+```
+
+#### **Exemple : Hauteur de l'index NUMDEP_IDX**
+
+```sql
+SELECT blevel + 1 AS hauteur
+FROM USER_INDEXES
+WHERE index_name = 'NUMDEP_IDX';
+```
+
+---
+
+<a name="section4"></a>
+## **4. Paquetage PL/SQL DBMS_ROWID**
+
+### **4.1. Compréhension des ROWID**
+
+- Un **ROWID** est un identifiant unique pour chaque ligne d'une table, contenant des informations sur l'emplacement physique de la ligne.
+- Structure du ROWID :
+  - Objet : Identifie l'objet (table ou index).
+  - Fichier : Numéro du fichier de données.
+  - Bloc : Numéro du bloc contenant la ligne.
+  - Ligne : Position de la ligne dans le bloc.
+
+### **4.2. Fonctions du Paquetage**
+
+- **DBMS_ROWID.ROWID_OBJECT(rowid)** : Retourne le numéro de l'objet.
+- **DBMS_ROWID.ROWID_RELATIVE_FNO(rowid)** : Retourne le numéro du fichier relatif.
+- **DBMS_ROWID.ROWID_BLOCK_NUMBER(rowid)** : Retourne le numéro du bloc.
+- **DBMS_ROWID.ROWID_ROW_NUMBER(rowid)** : Retourne le numéro de ligne dans le bloc.
+
+### **4.3. Exemples d'Utilisation**
+
+#### **Obtenir le Numéro de Bloc d'une Ligne**
+
+```sql
+SELECT DBMS_ROWID.ROWID_BLOCK_NUMBER(ROWID) AS bloc_id
+FROM nom_table
+WHERE condition;
+```
+
+#### **Exemple : Numéro de bloc pour une commune donnée**
+
+```sql
+SELECT DBMS_ROWID.ROWID_BLOCK_NUMBER(ROWID) AS bloc_id
+FROM COMMUNE
+WHERE CODEINSEE = '34172';
+```
+
+---
+
+<a name="section5"></a>
+## **5. Procédures PL/SQL**
+
+### **5.1. Création de Procédures**
+
+#### **Syntaxe Générale**
+
+```sql
+CREATE OR REPLACE PROCEDURE nom_procedure (paramètres) AS
+BEGIN
+    -- Corps de la procédure
+EXCEPTION
+    -- Gestion des exceptions
+END nom_procedure;
+```
+
+### **5.2. Gestion des Exceptions**
+
+- **NO_DATA_FOUND** : Aucune donnée n'a été trouvée.
+- **TOO_MANY_ROWS** : La requête a retourné plus d'une ligne.
+- **OTHERS** : Capture toutes les autres exceptions.
+
+#### **Exemple**
+
+```sql
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Aucune donnée trouvée.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : ' || SQLERRM);
+```
+
+### **5.3. Exemples de Procédures**
+
+#### **Procédure MEMEBLOCQUE**
+
+- **Objectif** : Afficher les enregistrements dans le même bloc qu'une ligne donnée.
+
+```sql
+CREATE OR REPLACE PROCEDURE MEMEBLOCQUE (
+    p_codeinsee IN COMMUNE.CODEINSEE%TYPE
+) AS
+    v_rowid ROWID;
+BEGIN
+    SELECT ROWID INTO v_rowid
+    FROM COMMUNE
+    WHERE CODEINSEE = p_codeinsee;
+
+    FOR rec IN (
+        SELECT CODEINSEE, NOMCOM
+        FROM COMMUNE
+        WHERE DBMS_ROWID.ROWID_BLOCK_NUMBER(ROWID) = DBMS_ROWID.ROWID_BLOCK_NUMBER(v_rowid)
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE('Code INSEE : ' || rec.CODEINSEE || ', Nom Commune : ' || rec.NOMCOM);
+    END LOOP;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Aucune commune trouvée avec le code INSEE ' || p_codeinsee);
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Erreur : ' || SQLERRM);
+END MEMEBLOCQUE;
+```
+
+#### **Procédure NBRETUPLESPARBLOC**
+
+- **Objectif** : Compter le nombre de tuples par bloc.
+
+```sql
+CREATE OR REPLACE PROCEDURE NBRETUPLESPARBLOC AS
+BEGIN
+    FOR rec IN (
+        SELECT DBMS_ROWID.ROWID_BLOCK_NUMBER(ROWID) AS bloc_id,
+               COUNT(*) AS nombre_tuples
+        FROM COMMUNE
+        GROUP BY DBMS_ROWID.ROWID_BLOCK_NUMBER(ROWID)
+        ORDER BY bloc_id
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE('Bloc ID : ' || rec.bloc_id || ', Nombre de tuples : ' || rec.nombre_tuples);
+    END LOOP;
+END NBRETUPLESPARBLOC;
+```
+
+---
+
+<a name="section6"></a>
+## **6. Optimisation des Requêtes et des Index**
+
+### **6.1. Utilisation des Index pour Optimiser les Requêtes**
+
+- Les index améliorent les performances des requêtes SELECT avec des clauses WHERE, JOIN, etc.
+- **Exemple** : Requête optimisée grâce à un index sur NUMDEP.
+
+```sql
+SELECT *
+FROM COMMUNE
+WHERE NUMDEP = '34';
+```
+
+### **6.2. Analyse des Plans d'Exécution**
+
+- **EXPLAIN PLAN** : Affiche le plan d'exécution d'une requête.
+
+#### **Syntaxe**
+
+```sql
+EXPLAIN PLAN FOR
+SELECT * FROM COMMUNE WHERE NUMDEP = '34';
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+```
+
+#### **Interprétation**
+
+- **TABLE ACCESS BY INDEX ROWID** : Indique que l'index est utilisé.
+- **INDEX RANGE SCAN** : Type de parcours de l'index.
+
+### **6.3. Facteur de Blocage et Performance**
+
+- **Facteur de Blocage** : Nombre de tuples pouvant être stockés dans un bloc.
+
+#### **Calcul**
+
+```plaintext
+Facteur de Blocage = (Taille du Bloc * (1 - PCT_FREE/100)) / Taille Moyenne des Tuples
+```
+
+- **Taille du Bloc** : Généralement 8 192 octets.
+- **PCT_FREE** : Pourcentage d'espace libre réservé dans un bloc.
+- **Taille Moyenne des Tuples** : Peut être obtenue via `avg_row_len` dans `USER_TABLES`.
+
+---
+
+<a name="section7"></a>
+## **7. Sécurité et Permissions**
+
+### **7.1. Gestion des Permissions sur les Tables et Index**
+
+#### **Accorder des Permissions**
+
+```sql
+GRANT SELECT, INSERT, UPDATE, DELETE ON nom_table TO nom_utilisateur;
+GRANT CREATE INDEX ON nom_table TO nom_utilisateur;
+```
+
+#### **Révoquer des Permissions**
+
+```sql
+REVOKE SELECT ON nom_table FROM nom_utilisateur;
+```
+
+### **7.2. Vues d'Administration**
+
+- **DBA_OBJECTS** : Contient des informations sur tous les objets de la base de données.
+- **ALL_TABLES**, **ALL_INDEXES** : Informations sur les tables et index accessibles à l'utilisateur.
+
+---
+
+<a name="section8"></a>
+## **8. Bonnes Pratiques et Conseils**
+
+### **8.1. Bonnes Pratiques pour les Index**
+
+- **Limiter le nombre d'index** : Trop d'index peuvent ralentir les opérations DML (INSERT, UPDATE, DELETE).
+- **Indexer les colonnes fréquemment utilisées** dans les clauses WHERE et JOIN.
+- **Éviter d'indexer des colonnes avec peu de valeurs distinctes**, sauf si un index bitmap est approprié.
+- **Mettre à jour régulièrement les statistiques** pour que l'optimiseur puisse générer des plans d'exécution efficaces.
+
+### **8.2. Maintenance des Index**
+
+- **Rebuild des Index** : Reconstituer un index pour réduire la fragmentation.
+
+```sql
+ALTER INDEX nom_index REBUILD;
+```
+
+- **Surveiller les Performances** : Utiliser les vues méta-schéma pour identifier les index peu efficaces.
+
+### **8.3. Documentation et Organisation du Code**
+
+- **Nommer clairement les objets** : Utiliser des noms significatifs pour les tables, colonnes, contraintes, et index.
+- **Commenter le code** : Ajouter des commentaires pour expliquer les parties complexes du code.
+- **Organiser les scripts** : Séparer les scripts de création, de modification, et de suppression.
+
+---
+
+## **Utilisation des Exemples de Code**
+
+- **Copier-Coller** : Vous pouvez copier les exemples de code directement dans votre éditeur SQL.
+- **Adaptation** : Modifiez les noms des objets et des colonnes pour qu'ils correspondent à votre schéma.
+- **Exécution** : N'oubliez pas d'activer l'affichage des résultats si nécessaire (par exemple, `SET SERVEROUTPUT ON;` en SQL*Plus).
+
+---
+
+## **Recherche Rapide avec Ctrl+F**
+
+Utilisez les mots-clés suivants pour trouver rapidement les informations :
+
+- **Création de table** : `CREATE TABLE`
+- **Clé primaire** : `PRIMARY KEY`
+- **Clé étrangère** : `FOREIGN KEY`
+- **Contrainte CHECK** : `CHECK`
+- **Contrainte UNIQUE** : `UNIQUE`
+- **Création d'index** : `CREATE INDEX`
+- **Index unique** : `UNIQUE INDEX`
+- **Index bitmap** : `BITMAP INDEX`
+- **Index fonctionnel** : `FUNCTIONAL INDEX`
+- **Suppression d'index** : `DROP INDEX`
+- **Renommer un index** : `ALTER INDEX RENAME`
+- **Vues méta-schéma** : `USER_INDEXES`, `INDEX_STATS`
+- **Mise à jour des statistiques** : `ANALYZE`
+- **ROWID** : `DBMS_ROWID`
+- **Procédures PL/SQL** : `CREATE OR REPLACE PROCEDURE`
+- **Exceptions PL/SQL** : `EXCEPTION`, `NO_DATA_FOUND`, `OTHERS`
+- **Optimisation des requêtes** : `EXPLAIN PLAN`
+- **Facteur de blocage** : `Facteur de Blocage`
+- **Permissions** : `GRANT`, `REVOKE`
+- **Bonnes pratiques** : `Bonnes Pratiques`
+
+---
+
+## **Conclusion**
+
+Cette documentation vise à vous fournir toutes les informations nécessaires pour aborder avec succès des TPs similaires sur les bases de données relationnelles, en particulier sur les index, les contraintes, l'utilisation des vues méta-schéma, et la manipulation avancée avec PL/SQL. N'hésitez pas à explorer chaque section et à tester les exemples pour renforcer votre compréhension.
+
+---
+
+**Note** : Cette documentation est destinée à des fins éducatives et doit être utilisée conformément aux politiques académiques en vigueur. Assurez-vous de comprendre le code et les concepts plutôt que de simplement copier-coller, afin de développer vos compétences en base de données.
