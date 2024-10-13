@@ -8,4 +8,4 @@ tags:
 #### [[TP2]]
 #### [[TP3]]
 #### [[TD1 index]]
-#### [[Prepa TP Noté Admin BDD (cours Index)]]
+#### [[LE PROMPT DE LA QUESTION 1 DU TP]]
