@@ -3,7 +3,7 @@ tags:
   - progmob
   - cours
 ---
-## [[Projet]]
+## [[COURS-M2IASD/Prog mobile IoT/Projet/Projet]]
 ### [[Verdict 8 oct]]
 
 ## TPs
