@@ -165,11 +165,6 @@ Après l'exécution de l'Algorithme de Boston, les affectations finales sont les
 | Tina     | École E         |
 | Ethan    | Non Affecté     |
 
-![Satisfaction des Élèves (Boston)](output_images/satisfaction_candidats_boston.png)  
-**Figure 1 :** Satisfaction des Élèves selon leurs choix (Algorithme de Boston)
-
-![Satisfaction des Écoles (Boston)](output_images/satisfaction_etablissements_boston.png)  
-**Figure 2 :** Satisfaction des Écoles en termes de priorités remplies (Algorithme de Boston)
 
 ### Analyse des Résultats
 
@@ -260,11 +255,7 @@ Après l'exécution de l'Algorithme d’Acceptation Différée, les affectations
 | Tina     | École E         |
 | Ethan    | Non Affecté     |
 
-![Étapes de l'Algorithme d'Acceptation Différée](output_images/algorithme_etapes_da.png)  
-**Figure 3 :** Étapes de l'Algorithme d'Acceptation Différée
-
-![Affectation Finale (DA)](output_images/affectation_finale_da.png)  
-**Figure 4 :** Affectation Finale (Algorithme d'Acceptation Différée)
+)
 
 ### Analyse des Résultats
 
@@ -374,8 +365,6 @@ Pour des systèmes d’affectation scolaires justes et transparents, il est reco
 
 ## Légende des Propriétés des Algorithmes
 
-![Légende](output_images/legende.png)  
-**Figure 6 :** Légende des Propriétés des Algorithmes d'Affectation
 
 Les propriétés des algorithmes d’affectation sont résumées comme suit :
 
