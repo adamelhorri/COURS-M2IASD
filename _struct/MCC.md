@@ -9,12 +9,12 @@
 
 #### Semestre 1 (S3M2IASD)
 
-1. **Théorie des bases de données et connaissances**
+1. **Théorie des bases de données et connaissances** coef 4
     
     - CM: 12 heures
     - TD: 24 heures
     - Évaluation: Devoir surveillé (1) CT (60%), Devoir surveillé (2) CC (40%).
-2. **Gestion des données au-delà de SQL (NoSQL)**
+2. **Gestion des données au-delà de SQL (NoSQL)** coef 4
     
     - CM: 12 heures
     - TD: 24 heures
@@ -24,17 +24,17 @@
     - CM: 12 heures
     - TD: 24 heures
     - Évaluation: Devoir surveillé CT (70%), Travaux Pratiques CC (30%).
-4. **Machine Learning 2 (méthodes avancées)**
+4. **Machine Learning 2 (méthodes avancées)** coef 4
     
     - CM: 12 heures
     - TD: 24 heures
     - Évaluation: Rapport ou Compte-rendu.
-5. **Administration des bases de données**
+5. **Administration des bases de données** coef 4
     
     - CM: 12 heures
     - TD: 24 heures
     - Évaluation: Devoir surveillé CT (50%), Travaux Pratiques CC (50%).
-6. **Développement mobile avancé, IoT et embarqué**
+6. **Développement mobile avancé, IoT et embarqué** coef 4
     
     - CM: 10.5 heures
     - TD: 25.5 heures
