@@ -81,6 +81,3 @@ neoid:350 a neovoc:Position;
  neovoc:temperature 1.22E1.
 ```
 
---- 
-
-Cela couvre les parties pertinentes du cours analysé sur Neo4J.
